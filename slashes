@@ -1,21 +1,31 @@
 #!/usr/bin/perl -w
 
 my $debug =
-    ($#ARGV >= 0 and $ARGV[0] =~ m/^-d([1-2]?)$/ and shift and ($1 || 1));
+    ($#ARGV >= 0 and $ARGV[0] =~ m/^-d([1-4]?)$/ and shift and ($1 || 2));
 $| = 1;
 
 $_ = join '', <>;
 while (1) {
-        print "\n[", $_, "]" if $debug == 1;
-        if (s!^([^/\\]+)!! or s!^\\(.)!!s) {
+        print "\n[", $_, "]" if $debug >= 2;
+        if (s!^([^/\\]+)!! or s!^\\(.)!!s) { 
                 print($1);
-                print "\n[", $_, "]" if $debug == 2;
+                print "\n[", $_, "]" if $debug == 1;
         }
-        elsif (s!^/((?:[^/\\]|\\.)*)/((?:[^/\\]|\\.)*)/!!s) {
+        else {
+            print "%1" if $debug >= 3;
+            if (s!^/((?:[^/\\]|\\.)*)/((?:[^/\\]|\\.)*)/!!s) {
+                print "%2" if $debug >= 3;
                 my ($s,$d) = ($1,$2);
+                print "%3" if $debug >= 3;
                 $s =~ s/\\(.)/$1/gs;
+                print "%4" if $debug >= 3;
                 $d =~ s/\\(.)/$1/gs;
-                while (s/(?:\Q$s\E)/$d/) { }
+                print "%5" if $debug >= 3;
+                while (s/(?:\Q$s\E)/$d/) { 
+                    print "-" if $debug >= 3;
+                    print "\n[", $_, "]" if $debug == 4;
+                }
+            }
+            else { last; }
         }
-        else { last; }
 }
