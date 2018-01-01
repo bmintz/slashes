@@ -4,7 +4,7 @@ my $debug =
     ($#ARGV >= 0 and $ARGV[0] =~ m/^-d([1-4]?)$/ and shift and ($1 || 2));
 $| = 1;
 
-$_ = join '', <>;
+$_ = join '', grep !/^#!/, <>;
 while (1) {
         print "\n[", $_, "]" if $debug >= 2;
         if (s!^([^/\\]+)!! or s!^\\(.)!!s) { 
